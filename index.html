@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111111">
+<title>Plata en Orden · 28 días</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fondo: #f6f6f4; --tinta: #111111; --suave: #6b6b66; --linea: #e4e4e0;
+    --naranja: #ff4d1c; --naranja-claro: #ffe6dd; --blanco: #ffffff;
+    --verde: #2e9e5b; --amarillo: #e0a800; --rojo: #d93a2b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { background: var(--fondo); color: var(--tinta); font-family: 'Manrope', system-ui, sans-serif; font-size: 16px; line-height: 1.5; }
+  #app { max-width: 560px; margin: 0 auto; padding: 18px 16px 80px; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+
+  .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; }
+  .marca { font-size: 18px; font-weight: 800; }
+  .pill { font-size: 12px; padding: 5px 11px; border-radius: 99px; background: var(--tinta); color: #fff; font-weight: 700; white-space: nowrap; }
+  .barra { height: 8px; border-radius: 99px; background: var(--linea); overflow: hidden; margin-bottom: 18px; }
+  .barra i { display: block; height: 100%; border-radius: 99px; background: var(--naranja); transition: width .3s; }
+  .volver { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 14px; color: var(--suave); padding: 6px 0; }
+
+  .card { background: var(--blanco); border-radius: 18px; padding: 18px 16px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+  .card.hero { background: var(--tinta); color: #fff; }
+  .etq { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--suave); font-weight: 700; }
+  .hero .etq { color: #b5b5ae; }
+  .num { font-size: 38px; font-weight: 800; color: var(--naranja); line-height: 1.15; margin: 4px 0 2px; }
+  .sub { font-size: 14px; color: var(--suave); }
+  .hero .sub { color: #cfcfc8; }
+  h1 { font-size: 26px; line-height: 1.15; font-weight: 800; margin: 6px 0 14px; }
+  h2 { font-size: 19px; font-weight: 800; margin: 4px 0 8px; line-height: 1.25; }
+  h3 { font-size: 15px; font-weight: 800; margin: 14px 0 6px; }
+  p { margin-bottom: 10px; }
+  p:last-child { margin-bottom: 0; }
+  ol.tarea { padding-left: 22px; }
+  ol.tarea li { margin-bottom: 8px; }
+  ol.tarea ul { padding-left: 18px; margin-top: 4px; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 18px; border-radius: 12px; font-weight: 800; font-size: 15px; background: var(--naranja); color: #fff; }
+  .btn.ancho { width: 100%; }
+  .btn.sec { background: var(--blanco); color: var(--tinta); border: 1.5px solid var(--tinta); }
+  .btn.hecho { background: var(--tinta); }
+  .btn.chico { padding: 8px 12px; font-size: 13px; border-radius: 10px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .chip { font-size: 14px; padding: 9px 13px; border-radius: 12px; background: var(--blanco); border: 1px solid #ddd; font-weight: 700; }
+  .medallas { display: flex; gap: 10px; flex-wrap: wrap; }
+  .med { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; font-size: 22px; background: var(--linea); }
+  .med.on { background: var(--naranja); }
+  .dias { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+  .dias a { aspect-ratio: 1; border-radius: 12px; display: grid; place-items: center; font-weight: 800; font-size: 14px; background: var(--blanco); border: 1px solid #ddd; }
+  .dias a.ok { background: var(--tinta); color: #fff; border-color: var(--tinta); }
+  .dias a.hoy { border: 2px solid var(--naranja); color: var(--naranja); }
+  .aviso { background: var(--naranja-claro); border-radius: 14px; padding: 12px 14px; margin-bottom: 14px; font-size: 14px; }
+
+  /* Calculadoras */
+  .campo { margin-bottom: 10px; }
+  .campo label { display: block; font-size: 13px; font-weight: 700; color: var(--suave); margin-bottom: 4px; }
+  input, select, textarea { font: inherit; font-size: 16px; width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid #d6d6d0; background: #fff; color: var(--tinta); }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--naranja); }
+  textarea { min-height: 90px; resize: vertical; }
+  .fila { display: grid; gap: 6px; align-items: center; margin-bottom: 8px; }
+  .fila .x { width: 34px; height: 40px; border-radius: 10px; font-size: 20px; color: var(--suave); }
+  .caja { border: 1px solid var(--linea); border-radius: 14px; padding: 10px; margin-bottom: 10px; background: #fbfbf9; }
+  .caja .fila { margin-bottom: 6px; }
+  .mini { display: grid; gap: 6px; }
+  .mini label span { display: block; font-size: 11px; color: var(--suave); font-weight: 700; text-transform: uppercase; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mini input, .mini select { padding: 9px 8px; }
+  .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: end; }
+  .res { border-top: 1px dashed var(--linea); margin-top: 6px; padding-top: 6px; }
+  .linea { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid #f0f0ec; font-size: 15px; }
+  .linea:last-child { border-bottom: 0; }
+  .linea b { white-space: nowrap; }
+  .total { font-weight: 800; font-size: 17px; }
+  .neg { color: var(--rojo); }
+  .pos { color: var(--verde); }
+  .barras { display: grid; gap: 6px; margin-top: 8px; }
+  .bar { display: grid; grid-template-columns: 78px 1fr 96px; gap: 8px; align-items: center; font-size: 13px; }
+  .bar span.b { height: 14px; border-radius: 99px; background: var(--naranja); min-width: 2px; }
+  .bar span.b.alivio { background: var(--tinta); }
+  .bar em { font-style: normal; text-align: right; font-weight: 700; }
+  .sem { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+  .nota { font-size: 13px; color: var(--suave); margin-top: 8px; }
+  .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 14px; }
+  .tabs a { text-align: center; padding: 9px 4px; border-radius: 12px; font-weight: 800; font-size: 13px; background: var(--blanco); border: 1px solid #ddd; }
+  .tabs a.on { background: var(--tinta); color: #fff; border-color: var(--tinta); }
+
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--tinta); color: #fff; padding: 14px 18px; border-radius: 14px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,.25); max-width: 92%; text-align: center; z-index: 9; }
+  .cert { text-align: center; padding: 36px 20px; border: 3px solid var(--tinta); }
+  .cert .num { font-size: 30px; }
+  .pie { text-align: center; margin-top: 28px; font-size: 13px; color: var(--suave); }
+  .pie button { text-decoration: underline; font-size: 13px; color: var(--suave); }
+  @media print {
+    body { background: #fff; }
+    .no-print { display: none !important; }
+    .card { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// Calculadoras de "28 días para ordenar tu plata" (Plata en Orden).
+// Solo cuentas: no guardan nada ni tocan la pantalla. La app las llama con los datos
+// que la persona carga, y los datos quedan en su celular.
+// Montos en pesos. Los resultados se redondean al peso.
+
+(function (raiz) {
+  'use strict';
+
+  const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio',
+    'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+  // Los gastos hormiga de una semana se multiplican por 4, como dice el día 4.
+  const SEMANAS_POR_MES = 4;
+
+  // Una baja de cuotas cuenta como "fuerte" (mes de alivio) si es de al menos el 20%.
+  const BAJA_FUERTE = 0.2;
+
+  const IVA_INTERESES = 0.21;
+
+  function num(v) {
+    const n = Number(v);
+    return Number.isFinite(n) ? n : 0;
+  }
+
+  function redondear(n) {
+    return Math.round(n);
+  }
+
+  function sumar(lista, campo) {
+    return (lista || []).reduce((t, x) => t + num(campo ? x[campo] : x), 0);
+  }
+
+  // Nombre del mes a "desde" meses de la fecha base (0 = este mes).
+  function nombreMes(desde, fechaBase) {
+    const f = fechaBase ? new Date(fechaBase) : new Date();
+    return MESES[(f.getMonth() + desde) % 12];
+  }
+
+  // ---------- 1. Sueldo (días 1, 2, 4, 6, 27 y 28) ----------
+
+  // Día 1. ingresos: { meses: [números], extras: [números] }.
+  // Con un solo mes, ese es el sueldo. Con varios, el promedio.
+  function ingresoMensual(ingresos) {
+    const meses = (ingresos && ingresos.meses || []).map(num).filter(n => n > 0);
+    const sueldo = meses.length ? meses.reduce((a, b) => a + b, 0) / meses.length : 0;
+    const extras = sumar(ingresos && ingresos.extras);
+    return { sueldo: redondear(sueldo), extras: redondear(extras), total: redondear(sueldo + extras) };
+  }
+
+  // Día 2. Fijos: [{ nombre, monto, cadaMeses }]. Un servicio bimestral (cadaMeses: 2) se divide por 2.
+  function fijosMensuales(fijos) {
+    return redondear((fijos || []).reduce((t, f) => t + num(f.monto) / Math.max(1, num(f.cadaMeses) || 1), 0));
+  }
+
+  // Día 4. Gastos hormiga de una semana: [montos] o [{ monto }].
+  function hormigaMensual(gastosSemana) {
+    const semana = (gastosSemana || []).reduce((t, g) => t + num(typeof g === 'object' ? g.monto : g), 0);
+    return { semana: redondear(semana), mes: redondear(semana * SEMANAS_POR_MES) };
+  }
+
+  // Día 6 y 28. Lo que entra menos lo que sale.
+  function numeroDelMes(d) {
+    const entra = ingresoMensual(d.ingresos).total;
+    const fijos = fijosMensuales(d.fijos);
+    const debitos = redondear(sumar(d.debitos, 'monto'));
+    const hormiga = hormigaMensual(d.hormiga).mes;
+    const cuotas = redondear(num(d.cuotasDelMes));
+    const sale = fijos + debitos + hormiga + cuotas;
+    return { entra, fijos, debitos, hormiga, cuotas, sale, numero: entra - sale };
+  }
+
+  // Día 28. Compara el número del día 6 con el de hoy.
+  function compararNumeros(dia6, hoy) {
+    return { antes: redondear(dia6), hoy: redondear(hoy), diferencia: redondear(hoy - dia6) };
+  }
+
+  // Día 27. Reparto del próximo sueldo, en el orden del día 27.
+  // d: { sueldo, fijos, cuotas, colchon, enero, diaADiaSemanal }
+  function planDelMes(d) {
+    let queda = redondear(num(d.sueldo));
+    const orden = [
+      ['fijos', num(d.fijos)],
+      ['cuotas', num(d.cuotas)],
+      ['colchon', num(d.colchon)],
+      ['enero', num(d.enero)],
+      ['diaADia', num(d.diaADiaSemanal) * SEMANAS_POR_MES],
+    ];
+    const reparto = {};
+    let falta = 0;
+    for (const [clave, monto] of orden) {
+      const m = redondear(monto);
+      const cubierto = Math.min(Math.max(queda, 0), m);
+      reparto[clave] = { necesita: m, cubierto };
+      if (cubierto < m) falta += m - cubierto;
+      queda -= m;
+    }
+    return { reparto, paraVos: Math.max(queda, 0), falta, alcanza: falta === 0 };
+  }
+
+  // ---------- 2. Cuotas (días 9 a 14) ----------
+
+  // Cuota: { nombre, monto, actual, total, tarjeta }. "actual" es la cuota que se paga este mes.
+  function cuotasRestantes(c) {
+    return Math.max(0, num(c.total) - num(c.actual) + 1);
+  }
+
+  function totalCuotasDelMes(cuotas, desde) {
+    const m = desde || 0;
+    return redondear((cuotas || []).reduce((t, c) => t + (cuotasRestantes(c) > m ? num(c.monto) : 0), 0));
+  }
+
+  // Día 9. Resumen de todas las cuotas.
+  function resumenCuotas(cuotas, sueldo) {
+    const total = totalCuotasDelMes(cuotas, 0);
+    const deudaTotal = redondear((cuotas || []).reduce((t, c) => t + num(c.monto) * cuotasRestantes(c), 0));
+    return {
+      cantidad: (cuotas || []).length,
+      porMes: total,
+      deudaTotal,
+      parteDelSueldo: num(sueldo) > 0 ? total / num(sueldo) : null,
+    };
+  }
+
+  // Día 10. Lo que se paga de cuotas cada mes, si no se suma ninguna nueva.
+  function proyeccionCuotas(cuotas, meses, fechaBase) {
+    const n = meses || 12;
+    const lista = [];
+    for (let m = 0; m < n; m++) {
+      const terminan = (cuotas || []).filter(c => cuotasRestantes(c) === m).map(c => c.nombre);
+      lista.push({ desde: m, mes: nombreMes(m, fechaBase), total: totalCuotasDelMes(cuotas, m), terminanAntes: terminan });
+    }
+    return lista;
+  }
+
+  // Día 10. Primer mes en que las cuotas bajan fuerte (20% o más contra hoy).
+  // Si nunca bajan tanto, el mes con la baja más grande.
+  function mesDeAlivio(cuotas, fechaBase) {
+    const p = proyeccionCuotas(cuotas, 12, fechaBase);
+    const hoy = p[0].total;
+    if (hoy === 0) return null;
+    for (let i = 1; i < p.length; i++) {
+      if (hoy - p[i].total >= hoy * BAJA_FUERTE) {
+        return { desde: i, mes: p[i].mes, libera: hoy - p[i].total, fuerte: true };
+      }
+    }
+    let mejor = null;
+    for (let i = 1; i < p.length; i++) {
+      const baja = p[i - 1].total - p[i].total;
+      if (baja > 0 && (!mejor || baja > mejor.baja)) mejor = { desde: i, mes: p[i].mes, baja };
+    }
+    return mejor ? { desde: mejor.desde, mes: mejor.mes, libera: hoy - p[mejor.desde].total, fuerte: false } : null;
+  }
+
+  // Tasa mensual a partir de lo que figura en el resumen.
+  // Si viene la TEM (tasa efectiva mensual), se usa esa. Si no, se saca de la TNA: TNA × 30 / 365.
+  function tasaMensual(t) {
+    if (num(t.tem) > 0) return num(t.tem) / 100;
+    if (num(t.tna) > 0) return (num(t.tna) / 100) * 30 / 365;
+    return 0;
+  }
+
+  // Día 11. Qué pasa si se paga solo el mínimo (o cualquier monto menor al total).
+  // d: { saldo, pago, tem, tna, conIva }. Es una estimación: el banco suma otros cargos.
+  function pagoMinimo(d) {
+    const saldo = num(d.saldo);
+    const pago = Math.min(num(d.pago), saldo);
+    const pasa = saldo - pago;
+    const tasa = tasaMensual(d);
+    const interes = pasa * tasa;
+    const iva = d.conIva === false ? 0 : interes * IVA_INTERESES;
+    return {
+      pasaAlMesQueViene: redondear(pasa),
+      tasaMensual: tasa,
+      interes: redondear(interes),
+      iva: redondear(iva),
+      costoDePatear: redondear(interes + iva),
+      deudaQueArrastras: redondear(pasa + interes + iva),
+    };
+  }
+
+  // Día 12 y 13. ¿Entra una compra nueva en cuotas sin pasarse del tope?
+  // nueva: { monto, total }. Se revisa cada mes que dura la compra nueva.
+  function entraEnElTope(cuotas, tope, nueva, fechaBase) {
+    const t = num(tope);
+    const meses = Math.max(1, num(nueva.total));
+    const problemas = [];
+    for (let m = 0; m < meses; m++) {
+      const conNueva = totalCuotasDelMes(cuotas, m) + num(nueva.monto);
+      if (conNueva > t) problemas.push({ desde: m, mes: nombreMes(m, fechaBase), total: redondear(conNueva), sePasaPor: redondear(conNueva - t) });
+    }
+    return { entra: problemas.length === 0, problemas };
+  }
+
+  // Día 13. Cómo queda el número del mes con un tope de cuotas.
+  function efectoDelTope(numeroActual, cuotasHoy, tope) {
+    const ahorro = Math.max(0, num(cuotasHoy) - num(tope));
+    return { ahorroPorMes: redondear(ahorro), numeroConTope: redondear(num(numeroActual) + ahorro) };
+  }
+
+  // ---------- 3. Aumentos (días 15 y 16) ----------
+
+  // Fijo con aumento: { nombre, monto, cadaMeses, proximoEn, porcentaje }.
+  // proximoEn: en cuántos meses es el próximo aumento (1 = el mes que viene).
+  // Sin dato de frecuencia, se toma todos los meses, como dice el día 15.
+  function montoEnMes(f, m) {
+    const cada = Math.max(1, num(f.cadaMeses) || 1);
+    const prox = Math.max(1, num(f.proximoEn) || 1);
+    const p = num(f.porcentaje) / 100;
+    const aumentos = m >= prox ? Math.floor((m - prox) / cada) + 1 : 0;
+    return num(f.monto) * Math.pow(1 + p, aumentos);
+  }
+
+  // Día 16. Fijos de los próximos meses con aumentos, contra el sueldo.
+  // sueldo: { monto, porcentaje, cadaMeses, proximoEn } con la misma lógica (opcional).
+  function proyeccionAumentos(fijos, meses, sueldo, fechaBase) {
+    const n = meses || 3;
+    const lista = [];
+    for (let m = 1; m <= n; m++) {
+      const total = (fijos || []).reduce((t, f) => t + montoEnMes(f, m), 0);
+      const fila = { desde: m, mes: nombreMes(m, fechaBase), fijos: redondear(total) };
+      if (sueldo && num(sueldo.monto) > 0) {
+        const s = montoEnMes(sueldo, m);
+        fila.sueldo = redondear(s);
+        fila.leQueda = redondear(s - total);
+      }
+      lista.push(fila);
+    }
+    const hoy = redondear((fijos || []).reduce((t, f) => t + num(f.monto), 0));
+    return { hoy, meses: lista };
+  }
+
+  // ---------- 4. Aguinaldo, deudas, colchón y enero (días 22 a 26) ----------
+
+  // Día 22. En relación de dependencia: la mitad del mejor sueldo del semestre.
+  // Independiente o monotributista: el mejor mes del año.
+  function aguinaldo(d) {
+    if (d.tipo === 'independiente') return redondear(num(d.mejorMes));
+    const sueldos = (d.sueldosSemestre || []).map(num);
+    return redondear(Math.max(0, ...sueldos) / 2);
+  }
+
+  // Día 22. Reparto sugerido en cuatro partes. Si no hay deudas, esa parte va al colchón.
+  const REPARTO_SUGERIDO = { deudas: 0.5, fiestas: 0.25, colchon: 0.15, gusto: 0.1 };
+
+  function repartoAguinaldo(monto, opciones) {
+    const o = opciones || {};
+    const pct = Object.assign({}, REPARTO_SUGERIDO, o.porcentajes || {});
+    if (o.sinDeudas) {
+      pct.colchon += pct.deudas;
+      pct.deudas = 0;
+    }
+    const total = num(monto);
+    const r = {
+      deudas: redondear(total * pct.deudas),
+      fiestas: redondear(total * pct.fiestas),
+      colchon: redondear(total * pct.colchon),
+    };
+    r.gusto = redondear(total) - r.deudas - r.fiestas - r.colchon; // el redondeo no pierde pesos
+    return r;
+  }
+
+  // Día 23. Deudas de la más cara a la más barata. Deuda: { nombre, saldo, tem, tna, sinInteres }.
+  // Las sin interés van al final: adelantarlas no ahorra intereses.
+  function ordenarDeudas(deudas) {
+    return (deudas || [])
+      .map(x => Object.assign({}, x, { tasa: x.sinInteres ? 0 : tasaMensual(x) }))
+      .sort((a, b) => (a.sinInteres === b.sinInteres ? b.tasa - a.tasa : a.sinInteres ? 1 : -1));
+  }
+
+  // Día 23. Reparte la plata para deudas de arriba hacia abajo.
+  // ahorroPorMes: intereses (con IVA) que se dejan de pagar el mes que viene.
+  function cancelarDeudas(deudas, plata) {
+    let queda = num(plata);
+    let ahorro = 0;
+    const plan = ordenarDeudas(deudas).map(x => {
+      const paga = Math.min(queda, num(x.saldo));
+      queda -= paga;
+      ahorro += paga * x.tasa * (1 + IVA_INTERESES);
+      return { nombre: x.nombre, saldo: redondear(num(x.saldo)), paga: redondear(paga), queda: redondear(num(x.saldo) - paga), sinInteres: !!x.sinInteres };
+    });
+    return { plan, sobra: redondear(queda), ahorroPorMes: redondear(ahorro) };
+  }
+
+  // Día 25. Colchón: la meta es un mes de fijos del mes que viene.
+  // d: { fijosMesQueViene, guardado, aportePorCobro }
+  function colchon(d) {
+    const meta = redondear(num(d.fijosMesQueViene));
+    const guardado = redondear(num(d.guardado));
+    const falta = Math.max(0, meta - guardado);
+    const aporte = num(d.aportePorCobro);
+    return {
+      meta,
+      guardado,
+      falta,
+      avance: meta > 0 ? Math.min(1, guardado / meta) : 0,
+      cobrosParaLlegar: falta === 0 ? 0 : aporte > 0 ? Math.ceil(falta / aporte) : null,
+    };
+  }
+
+  // Día 26. Gastos de enero a marzo: total y cuánto apartar por mes.
+  // mesesQueFaltan: meses de cobro hasta el primer gasto (mínimo 1).
+  function eneroSinSustos(gastos, mesesQueFaltan) {
+    const total = redondear(sumar(gastos, 'monto'));
+    const meses = Math.max(1, num(mesesQueFaltan) || 1);
+    return { total, meses, porMes: Math.ceil(total / meses) };
+  }
+
+  const api = {
+    nombreMes,
+    ingresoMensual, fijosMensuales, hormigaMensual, numeroDelMes, compararNumeros, planDelMes,
+    cuotasRestantes, totalCuotasDelMes, resumenCuotas, proyeccionCuotas, mesDeAlivio,
+    tasaMensual, pagoMinimo, entraEnElTope, efectoDelTope,
+    montoEnMes, proyeccionAumentos,
+    aguinaldo, repartoAguinaldo, REPARTO_SUGERIDO, ordenarDeudas, cancelarDeudas, colchon, eneroSinSustos,
+  };
+
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  else raiz.Calculadoras = api;
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+<script>
+(function () {
+  'use strict';
+  const CONTENIDO = {"semanas": [{"n": 1, "titulo": "La foto real"}, {"n": 2, "titulo": "La tarjeta y las cuotas"}, {"n": 3, "titulo": "Los aumentos y los fijos"}, {"n": 4, "titulo": "Aguinaldo, colchón y plan para enero"}], "dias": [{"n": 1, "semana": 1, "titulo": "Cuánto entra de verdad", "idea": ["Antes de ordenar algo, tenés que saber con cuánto contás. No con lo que dice el recibo ni con lo que \"más o menos\" cobrás. Con lo que entra en tu cuenta o en tu mano."], "tarea": [{"texto": "Abrí la calculadora de sueldo.", "sub": []}, {"texto": "Anotá lo que cobraste el último mes, en mano, después de descuentos.", "sub": []}, {"texto": "Sumá todo lo demás que entró: changas, ventas, horas extra, la plata que te pasa alguien de la familia.", "sub": []}, {"texto": "Si cobrás distinto cada mes, anotá los últimos 3 meses. La app saca el promedio.", "sub": []}], "ejemplo": ["Caro trabaja en un comercio y cobra $780.000 en mano. Los fines de semana hace tortas por encargo: el mes pasado fueron $120.000. Ella siempre decía \"gano 780\". En realidad entran $900.000, y esos $120.000 de las tortas se le iban sin que se diera cuenta."], "pensar": ["¿Hay plata que entra y que nunca contás como ingreso?"], "medalla": null}, {"n": 2, "semana": 1, "titulo": "Los fijos que no se negocian", "idea": ["Hay gastos que llegan todos los meses, quieras o no. Si no sabés cuánto suman, cualquier otro gasto te toma por sorpresa."], "tarea": [{"texto": "Hacé una lista de todo lo que pagás sí o sí cada mes: alquiler o expensas, luz, gas, agua, internet, celular, prepaga, colegio, transporte.", "sub": []}, {"texto": "Al lado de cada uno, anotá cuánto pagaste la última vez.", "sub": []}, {"texto": "Si alguno llega cada dos meses, como algunos servicios, dividilo por dos.", "sub": []}, {"texto": "Cargá el total en la calculadora de sueldo, en \"gastos fijos\".", "sub": []}], "ejemplo": ["Sole creía que sus fijos eran \"el alquiler y poco más\". Cuando hizo la lista le dieron 11 cosas. Sumaban casi la mitad de su sueldo. No le cambió el sueldo, pero dejó de preguntarse por qué a fin de mes no llegaba."], "pensar": ["¿Qué porcentaje de lo que cobrás se va en fijos antes de que puedas elegir algo?"], "medalla": null}, {"n": 3, "semana": 1, "titulo": "Los débitos que te olvidaste", "idea": ["Las suscripciones son chiquitas y por eso no duelen. Pero se debitan solas, todos los meses, aunque no las uses."], "tarea": [{"texto": "Abrí el resumen de la tarjeta y los movimientos de tu cuenta o billetera virtual del último mes.", "sub": []}, {"texto": "Marcá todo lo que se cobra solo: plataformas de series y música, apps, gimnasio, almacenamiento en la nube, seguros.", "sub": []}, {"texto": "Al lado de cada uno escribí \"lo uso\" o \"no lo uso\".", "sub": []}, {"texto": "Los que no usás, dalos de baja hoy. Es un trámite de 5 minutos que te ahorra plata todos los meses.", "sub": []}], "ejemplo": ["Martín encontró tres plataformas de series, aunque miraba una sola, y un gimnasio al que no iba desde marzo. Dio de baja cuatro débitos en una tarde. Esa plata ahora le queda libre todos los meses."], "pensar": ["¿Cuántas cosas estás pagando \"por las dudas\"?"], "medalla": null}, {"n": 4, "semana": 1, "titulo": "Los gastos hormiga", "idea": ["Un café, un delivery, algo en el kiosco. Cada uno solo no es nada. Todos juntos, en un mes, pueden ser una cuota entera."], "tarea": [{"texto": "Desde hoy y durante 7 días, anotá en la app cada gasto chico que hagas. Sin juzgarte, solo anotalo.", "sub": []}, {"texto": "Hoy anotá los de ayer, los que te acuerdes.", "sub": []}, {"texto": "La app los multiplica por cuatro y te muestra cuánto sería en un mes.", "sub": []}], "ejemplo": ["Ana se compraba un café con algo dulce camino al trabajo, todos los días hábiles. Nunca lo había sumado. Cuando la app le mostró el número del mes, se rió: era casi lo mismo que pagaba de internet."], "pensar": ["¿Cuál es tu gasto hormiga favorito? No hace falta dejarlo. Solo saber cuánto cuesta."], "medalla": null}, {"n": 5, "semana": 1, "titulo": "El semáforo", "idea": ["No todos los gastos son iguales. Algunos son necesarios, otros te importan de verdad y otros se podrían cortar mañana sin que te des cuenta."], "tarea": [{"texto": "Repasá tu lista de fijos, débitos y gastos hormiga.", "sub": []}, {"texto": "Pintá cada uno de un color en la app:", "sub": ["Verde: necesario, no se toca.", "Amarillo: me importa, pero se puede achicar.", "Rojo: se puede cortar."]}, {"texto": "No cortes nada todavía. Hoy solo clasificás.", "sub": []}], "ejemplo": ["Para Laura, la salida del viernes con amigas es amarilla: le importa mucho, pero puede elegir un lugar más barato. El delivery de los martes, en cambio, es rojo: lo pide por cansancio, no porque le guste."], "pensar": ["¿Qué gasto te costó más pintar? Ese suele ser el que más dice de vos."], "medalla": null}, {"n": 6, "semana": 1, "titulo": "Tu número del mes", "idea": ["Este es el número más importante de los 28 días: lo que entra menos lo que sale. Puede dar positivo, cero o negativo. Cualquiera de los tres está bien para empezar. Es una foto, no un juicio."], "tarea": [{"texto": "Abrí la calculadora de sueldo. Ya tiene lo que entra (día 1) y tus fijos (día 2).", "sub": []}, {"texto": "Sumá los débitos (día 3) y los gastos hormiga del mes (día 4).", "sub": []}, {"texto": "Agregá las cuotas de la tarjeta de este mes. Si no sabés el número, poné el último resumen.", "sub": []}, {"texto": "Mirá tu número y guardalo. El día 28 lo vamos a comparar.", "sub": []}], "ejemplo": ["A Javi le dio menos $85.000. Primero se asustó. Después entendió que esos $85.000 eran justo lo que cada mes pateaba a la tarjeta. Por primera vez tenía un número concreto para achicar, en vez de una angustia sin forma."], "pensar": ["¿Te dio lo que esperabas? ¿Más o menos?"], "medalla": null}, {"n": 7, "semana": 1, "titulo": "Repaso de la semana", "idea": ["Una semana atrás no sabías adónde se iba tu plata. Hoy tenés la foto. Eso ya es un montón."], "tarea": [{"texto": "Mirá tu semáforo y elegí UN gasto rojo para cortar desde esta semana.", "sub": []}, {"texto": "Escribí en la app por qué lo elegiste.", "sub": []}, {"texto": "Terminá de anotar los gastos hormiga hasta mañana.", "sub": []}], "ejemplo": ["Pau eligió cortar el delivery de los domingos a la noche. No por la plata nada más: se dio cuenta de que lo pedía porque llegaba al domingo sin nada planeado. Ahora el sábado deja algo cocinado."], "pensar": ["¿Qué fue lo que más te sorprendió de tu propia foto?"], "medalla": "Ya sé adónde va mi plata"}, {"n": 8, "semana": 2, "titulo": "Leé el resumen sin miedo", "idea": ["Mucha gente paga la tarjeta sin abrir el resumen, porque da miedo. Pero lo que no se mira no se puede ordenar. Hoy lo leemos línea por línea."], "tarea": [{"texto": "Abrí tu último resumen.", "sub": []}, {"texto": "Buscá estos datos y anotalos en la app:", "sub": ["Fecha de cierre: hasta ese día, lo que comprás entra en este resumen.", "Fecha de vencimiento: el último día para pagar sin recargo.", "Saldo total: todo lo que debés este mes.", "Pago mínimo: lo menos que podés pagar para no quedar en mora."]}, {"texto": "Mirá también la parte de impuestos y cargos. Si algo no lo entendés, anotalo para preguntarle al banco.", "sub": []}], "ejemplo": ["Flor compraba siempre el día antes del cierre sin saberlo, y todo le caía en el resumen siguiente de golpe. Cuando aprendió a ver la fecha de cierre, empezó a hacer las compras grandes justo después. Así tenía casi dos meses para pagarlas."], "pensar": ["¿Qué parte del resumen nunca habías mirado?"], "medalla": null}, {"n": 9, "semana": 2, "titulo": "Todas tus cuotas en una lista", "idea": ["Las cuotas son como platos que vas apilando. Cada una sola parece liviana. El problema es cuando no sabés cuántas tenés arriba."], "tarea": [{"texto": "Abrí la calculadora de cuotas.", "sub": []}, {"texto": "Cargá cada compra en cuotas que tengas activa: qué es, cuánto pagás por mes, en qué cuota vas y cuántas son en total. Ejemplo: \"heladera, $45.000, cuota 4 de 12\".", "sub": []}, {"texto": "Si tenés más de una tarjeta, cargá todas.", "sub": []}, {"texto": "Mirá el total que pagás por mes en cuotas.", "sub": []}], "ejemplo": ["Mica tenía 9 compras en cuotas en dos tarjetas. Sumaban $310.000 por mes. Nunca lo había visto junto, porque cada resumen le mostraba la mitad."], "pensar": ["¿Cuántas de esas compras volverías a hacer en cuotas, sabiendo lo que sabés hoy?"], "medalla": null}, {"n": 10, "semana": 2, "titulo": "El mes en que se libera", "idea": ["Las cuotas se terminan. Saber cuándo te da algo que vale mucho: un horizonte. Ya no es \"no salgo más de esto\", sino \"en abril respiro\"."], "tarea": [{"texto": "Abrí la calculadora de cuotas. Ya tiene tus cuotas del día 9.", "sub": []}, {"texto": "Mirá el gráfico de los próximos 12 meses: cuánto vas a pagar de cuotas cada mes si no sumás ninguna nueva.", "sub": []}, {"texto": "Marcá el primer mes en que baja fuerte. Ese es tu mes de alivio.", "sub": []}, {"texto": "Escribí qué vas a hacer con esa plata cuando se libere, antes de que se la coma otra cuota.", "sub": []}], "ejemplo": ["A Gise le salió que en marzo se le terminaban tres cuotas juntas y le quedaban $95.000 libres por mes. Decidió que la mitad iba al colchón y la otra mitad a adelantar la deuda más cara. Tener el mes marcado la ayudó a no sumar cuotas nuevas hasta entonces."], "pensar": ["¿Cuál es tu mes de alivio?"], "medalla": null}, {"n": 11, "semana": 2, "titulo": "La trampa del pago mínimo", "idea": ["El pago mínimo te salva el mes, pero lo que no pagás no desaparece. Pasa al resumen siguiente con intereses, y el mes que viene arrancás debiendo más."], "tarea": [{"texto": "Buscá tu último resumen de la tarjeta.", "sub": []}, {"texto": "Anotá tres datos: el saldo total, el pago mínimo y la tasa de interés. La tasa figura en el resumen, casi siempre abajo de todo.", "sub": []}, {"texto": "Cargalos en la calculadora de cuotas, en la parte \"pago mínimo\".", "sub": []}, {"texto": "Mirá cuánto vas a pagar de intereses el mes que viene si pagás solo el mínimo.", "sub": []}], "ejemplo": ["Lucas tenía un saldo de $400.000 y pagó el mínimo, $60.000. Pensó que debía $340.000. Al mes siguiente, con intereses e impuestos, el resumen le llegó más alto, y encima con las cuotas nuevas del mes. Recién cuando lo cargó en la calculadora vio cuánto le costaba \"patear\" la deuda."], "pensar": ["¿Cuántos meses seguidos pagaste solo el mínimo este año?"], "medalla": null}, {"n": 12, "semana": 2, "titulo": "\"Sin interés\" no es gratis", "idea": ["Las cuotas sin interés son útiles. Pero cada una que sumás es plata de tus sueldos que vienen, comprometida desde hoy."], "tarea": [{"texto": "Pensá en la próxima compra en cuotas que tenés ganas de hacer.", "sub": []}, {"texto": "Antes de hacerla, respondé en la app tres preguntas:", "sub": ["¿Entra en mis cuotas de los próximos meses sin pasarme del tope? (lo armamos mañana)", "¿Hay un precio más bajo pagando de contado o por transferencia?", "¿La necesito ahora o puede esperar a mi mes de alivio?"]}, {"texto": "Si las tres respuestas te dan tranquilidad, adelante.", "sub": []}], "ejemplo": ["Ro quería un celular en 12 cuotas sin interés. Cuando hizo las preguntas, vio que en efectivo tenía un descuento, y que en 2 meses se le liberaba una cuota grande. Esperó, juntó un poco y lo compró en 6 cuotas en vez de 12."], "pensar": ["¿Cuál fue la última compra en cuotas que hiciste por impulso?"], "medalla": null}, {"n": 13, "semana": 2, "titulo": "Tu tope de cuotas", "idea": ["Si no le ponés un techo a las cuotas, el techo te lo pone el resumen. Y suele ser más bajo de lo que te gustaría."], "tarea": [{"texto": "Abrí la calculadora de cuotas.", "sub": []}, {"texto": "Mirá cuánto pagás hoy de cuotas por mes y qué parte de tu sueldo es.", "sub": []}, {"texto": "Elegí un tope: el máximo que querés pagar de cuotas por mes. La app te muestra cómo queda tu número del mes con ese tope.", "sub": []}, {"texto": "Guardalo. Desde hoy, antes de cada compra en cuotas, la app te avisa si te pasás.", "sub": []}], "ejemplo": ["Nati pagaba un tercio de su sueldo en cuotas. Se puso como tope una quinta parte. No lo logró en un mes, pero cada cuota que se terminaba no la reemplazaba. En cinco meses llegó."], "pensar": ["¿Con qué número de cuotas por mes dormirías sin preocupaciones?"], "medalla": null}, {"n": 14, "semana": 2, "titulo": "Repaso de la semana", "idea": ["La tarjeta dejó de ser un misterio. Sabés cuánto debés, cuándo se libera y cuánto te cuesta patear."], "tarea": [{"texto": "Mirá el resumen de tu semana en la app: total de cuotas, mes de alivio y tope.", "sub": []}, {"texto": "Escribí en una línea cuánto debés hoy y en qué mes salís si no sumás nada.", "sub": []}, {"texto": "Si este mes podés pagar el total del resumen en vez del mínimo, aunque sea una vez, anotalo como meta.", "sub": []}], "ejemplo": ["Dani escribió: \"Debo $1.200.000 entre las dos tarjetas. Si no sumo nada, en agosto estoy liberado\". Lo puso de fondo de pantalla. Cada vez que agarraba el celular para comprar algo, lo veía."], "pensar": ["¿Cómo te sentís hoy con la tarjeta, comparado con hace una semana?"], "medalla": "La tarjeta ya no me maneja"}, {"n": 15, "semana": 3, "titulo": "Qué aumenta y cada cuánto", "idea": ["En Argentina los precios no se quedan quietos. No podés frenar los aumentos, pero sí saber cuándo vienen, para que no te tomen por sorpresa."], "tarea": [{"texto": "Abrí la calculadora de aumentos.", "sub": []}, {"texto": "Para cada fijo del día 2, anotá cada cuánto aumenta:", "sub": ["Alquiler: fijate en tu contrato cada cuánto se actualiza y con qué índice.", "Prepaga y colegio: suelen avisar por mail o en la factura.", "Servicios: mirá las últimas facturas y compará."]}, {"texto": "Si no sabés, poné \"todos los meses\" para estar del lado seguro.", "sub": []}], "ejemplo": ["Cami no tenía idea de que su alquiler se actualizaba cada cuatro meses. Cuando lo anotó, vio que el próximo aumento le caía en enero, justo con las vacaciones. Pudo prepararse en vez de enterarse con el aviso del dueño."], "pensar": ["¿Qué aumento te tomó por sorpresa este año?"], "medalla": null}, {"n": 16, "semana": 3, "titulo": "Tu mes que viene, con aumentos", "idea": ["Si planificás el mes que viene con los precios de hoy, ya arrancás perdiendo. Hoy armamos el mes que viene con lo que sabemos que va a subir."], "tarea": [{"texto": "Abrí la calculadora de aumentos. Ya tiene cada fijo y cada cuánto sube.", "sub": []}, {"texto": "Para cada uno, poné cuánto creés que va a aumentar. Si no sabés, usá el último aumento que tuviste.", "sub": []}, {"texto": "La app te muestra tus fijos del mes que viene y de los próximos tres meses.", "sub": []}, {"texto": "Compará con tu sueldo. Si tu sueldo no sube igual, ahí está la diferencia que hay que cubrir.", "sub": []}], "ejemplo": ["Fer proyectó sus fijos de diciembre a febrero. Vio que en febrero, con el aumento del alquiler y la prepaga, iba a necesitar $70.000 más que ahora. Lo supo con tres meses de anticipación y pudo empezar a apartarlos desde ya."], "pensar": ["¿Tu sueldo sube al mismo ritmo que tus fijos?"], "medalla": null}, {"n": 17, "semana": 3, "titulo": "Llamar y negociar", "idea": ["Muchas empresas tienen planes más baratos que no ofrecen hasta que pedís la baja. Una llamada de 15 minutos te puede ahorrar plata todos los meses."], "tarea": [{"texto": "Elegí un servicio para negociar hoy: internet, celular, cable o prepaga.", "sub": []}, {"texto": "Buscá en la web de la empresa qué planes tienen y cuánto cuestan.", "sub": []}, {"texto": "Llamá o escribí por el chat y decí: \"Quiero dar de baja el servicio porque me resulta caro\". Escuchá qué te ofrecen.", "sub": []}, {"texto": "Si no te ofrecen nada, preguntá directamente por un plan más barato. Anotá el resultado en la app.", "sub": []}], "ejemplo": ["Jime llamó a su compañía de internet para dar la baja. Le ofrecieron seis meses con descuento sin cambiar nada. Con la prepaga no tuvo suerte, pero se enteró de que había un plan con la misma cartilla de médicos que ella usaba, más barato."], "pensar": ["¿Qué servicio pagás desde hace años sin haber preguntado nunca si hay algo mejor?"], "medalla": null}, {"n": 18, "semana": 3, "titulo": "El súper con lista", "idea": ["En el súper se gasta mucho de más por ir sin plan: lo que está a la vista, lo que \"ya que estoy\", lo que se vence en la heladera."], "tarea": [{"texto": "Armá en la app el menú de la semana: qué vas a comer cada día, aunque sea simple.", "sub": []}, {"texto": "Mirá qué tenés en la heladera y la alacena, y armá la lista solo con lo que falta.", "sub": []}, {"texto": "En el súper, compará por precio por kilo o por litro, no por precio del paquete. Suele estar en el cartelito, más chico.", "sub": []}, {"texto": "Comprá solo lo de la lista. Si algo te tienta, anotalo para la semana que viene.", "sub": []}], "ejemplo": ["Agus iba al súper tres veces por semana \"a buscar algo\". Empezó a ir una vez, con lista y menú. Además de gastar menos, dejó de tirar verdura podrida los viernes."], "pensar": ["¿Cuánto tirás por semana porque se venció o se echó a perder?"], "medalla": null}, {"n": 19, "semana": 3, "titulo": "Cortar sin sufrir", "idea": ["Cortar todo de golpe no dura. Probar un mes, en cambio, sí. Si no lo extrañás, lo dejás. Si lo extrañás, vuelve, y no pasa nada."], "tarea": [{"texto": "Abrí tu semáforo del día 5.", "sub": []}, {"texto": "Elegí 3 gastos rojos o amarillos para bajar o cortar durante un mes.", "sub": []}, {"texto": "Para cada uno, escribí qué vas a hacer en su lugar. Por ejemplo: \"en vez del delivery del martes, dejo algo cocinado el lunes\".", "sub": []}, {"texto": "La app te recuerda en un mes si querés que vuelvan.", "sub": []}], "ejemplo": ["Lu cortó por un mes las compras online \"de noche, en la cama\", la segunda plataforma de series y el café de la oficina. Al mes volvió el café. Las otras dos no las extrañó nunca."], "pensar": ["¿Qué gasto creés que vas a extrañar? ¿Y cuál creés que no?"], "medalla": null}, {"n": 20, "semana": 3, "titulo": "La plata del día a día", "idea": ["Los gastos chicos son los más difíciles de controlar porque no se anotan. La solución más simple: un monto fijo por semana, y cuando se termina, se termina."], "tarea": [{"texto": "Mirá cuánto gastaste en gastos chicos la semana del día 4.", "sub": []}, {"texto": "Elegí un monto semanal un poco menor. Ese es tu \"plata del día a día\".", "sub": []}, {"texto": "Separalo: en efectivo, en una billetera virtual aparte o en una tarjeta prepaga. Lo importante es que no se mezcle con el resto.", "sub": []}, {"texto": "Cada lunes, recargás el mismo monto. Si te sobra, va al colchón.", "sub": []}], "ejemplo": ["Sofi se pasa todos los lunes $40.000 a una billetera que usa solo para el día a día: el colectivo, la panadería, algún gusto. La primera semana se le terminó el jueves. A la tercera le sobraron $6.000."], "pensar": ["¿Qué día de la semana se te escapa más la plata?"], "medalla": null}, {"n": 21, "semana": 3, "titulo": "Repaso de la semana", "idea": ["Esta semana no ganaste más plata. Hiciste que la que tenés rinda más. Ese músculo te va a servir siempre."], "tarea": [{"texto": "Sumá en la app todo lo que ahorraste esta semana: bajas, negociaciones, cortes y súper.", "sub": []}, {"texto": "Mirá cuánto sería en un año si lo sostenés.", "sub": []}, {"texto": "Elegí qué hacer con lo que liberaste: adelantar una deuda, el colchón o las dos cosas.", "sub": []}], "ejemplo": ["A Vale le dio $58.000 por mes entre lo que negoció y lo que cortó. Multiplicado por doce, era más que su aguinaldo. Se quedó mirando el número un rato largo."], "pensar": ["¿Qué cambio de esta semana te costó menos de lo que pensabas?"], "medalla": "Mi plata rinde más"}, {"n": 22, "semana": 4, "titulo": "Antes de que llegue el aguinaldo", "idea": ["El aguinaldo se va rápido porque llega en diciembre, junto con las fiestas, los regalos y las ganas de darse un gusto. Si decidís qué hacer con él antes de cobrarlo, rinde el doble."], "tarea": [{"texto": "Abrí la calculadora de aguinaldo.", "sub": []}, {"texto": "Si trabajás en relación de dependencia, anotá tu mejor sueldo del semestre: el aguinaldo es la mitad de ese número.", "sub": []}, {"texto": "Si sos independiente o monotributista, elegí tu mejor mes del año como \"tu aguinaldo\".", "sub": []}, {"texto": "Repartilo en cuatro partes: deudas, fiestas, colchón y un gusto. La app te sugiere un reparto y vos lo cambiás como quieras.", "sub": []}], "ejemplo": ["Vero cobra $1.000.000 en mano, así que su segundo aguinaldo ronda los $500.000. Antes de cobrarlo lo repartió así: $250.000 para cancelar las cuotas más caras, $120.000 para las fiestas, $80.000 al colchón y $50.000 para unas zapatillas que quería hace meses. En enero, por primera vez, no arrancó en rojo."], "pensar": ["¿Qué hiciste con tu último aguinaldo? ¿Te acordás?"], "medalla": null}, {"n": 23, "semana": 4, "titulo": "Primero las deudas caras", "idea": ["No todas las deudas cuestan lo mismo. Si tenés plata para cancelar algo, empezá por la que más intereses te cobra, no por la más grande ni por la que más te molesta."], "tarea": [{"texto": "Abrí la calculadora de aguinaldo, en la parte \"deudas\".", "sub": []}, {"texto": "Ordená tus deudas de la más cara a la más barata:", "sub": ["Lo que quedó financiado del resumen (por pagar el mínimo) suele ser lo más caro.", "Después, préstamos personales o cuotas con interés.", "Las cuotas sin interés van al final: adelantarlas no te ahorra intereses."]}, {"texto": "Asigná la parte de \"deudas\" del aguinaldo empezando por arriba.", "sub": []}, {"texto": "Mirá cuánto te ahorrás de intereses con ese orden.", "sub": []}], "ejemplo": ["Leo quería cancelar las cuotas del televisor porque le molestaba verlas. La calculadora le mostró que eran sin interés, y que lo que de verdad le costaba plata era el saldo financiado de la otra tarjeta. Cambió el plan y se ahorró intereses de varios meses."], "pensar": ["¿Qué deuda te molesta más? ¿Es la que más te cuesta?"], "medalla": null}, {"n": 24, "semana": 4, "titulo": "Las fiestas con presupuesto", "idea": ["Diciembre es el mes en que más se gasta sin pensar: regalos, comidas, juntadas, el amigo invisible. Con un número fijo lo disfrutás igual, y enero no te pasa factura."], "tarea": [{"texto": "Tomá la parte de \"fiestas\" de tu reparto del aguinaldo, o un monto que elijas.", "sub": []}, {"texto": "Repartila en la app: regalos, comida de Navidad y Año Nuevo, salidas y juntadas.", "sub": []}, {"texto": "Hacé la lista de regalos con un monto al lado de cada persona.", "sub": []}, {"texto": "Si en tu familia hacen amigo invisible, proponé un tope de precio. Casi siempre alguien más lo estaba pensando.", "sub": []}], "ejemplo": ["Male tiene una familia grande y todos los años terminaba la Navidad en cuotas. Este año propuso amigo invisible con tope en vez de regalos para todos. Gastó la mitad, y dice que fue la Navidad más divertida en años."], "pensar": ["¿Qué parte de las fiestas disfrutás de verdad, y cuál hacés por compromiso?"], "medalla": null}, {"n": 25, "semana": 4, "titulo": "Tu colchón para emergencias", "idea": ["El colchón es lo que te evita sacar la tarjeta cuando se rompe el lavarropas o te enfermás. Sin colchón, cada imprevisto se convierte en deuda."], "tarea": [{"texto": "Mirá en la app tus fijos del mes que viene (día 16).", "sub": []}, {"texto": "Esa es tu primera meta: tener guardado un mes de fijos.", "sub": []}, {"texto": "Separá lo que puedas hoy, aunque sea poco, en una cuenta o billetera que NO uses para el día a día.", "sub": []}, {"texto": "Programá en la app un aporte fijo: cada vez que cobrás, una parte va directo al colchón, antes de gastar.", "sub": []}], "ejemplo": ["Clari empezó con $20.000, que le parecía nada. Cada vez que cobraba, pasaba $25.000 al colchón antes de pagar cualquier otra cosa. En marzo se le rompió la heladera y, por primera vez, no tuvo que pagarla en cuotas."], "pensar": ["¿Cuál fue el último imprevisto que terminaste pagando con la tarjeta?"], "medalla": null}, {"n": 26, "semana": 4, "titulo": "Enero sin sustos", "idea": ["Enero y febrero traen gastos que todos los años \"nos olvidamos\": vacaciones, útiles y uniformes de marzo, patente, seguros anuales. Anotarlos ahora los convierte en un plan."], "tarea": [{"texto": "Hacé la lista en la app de lo que sabés que viene entre enero y marzo:", "sub": ["Vacaciones o salidas de verano.", "Útiles, uniformes y matrícula del colegio.", "Patente del auto, seguros anuales, cuotas de algún club."]}, {"texto": "Poné un monto aproximado al lado de cada uno.", "sub": []}, {"texto": "Dividí el total por los meses que faltan. Ese es el monto que tenés que apartar por mes desde ahora.", "sub": []}, {"texto": "Fijate si en tu provincia o municipio hay descuento por pagar la patente anual por adelantado.", "sub": []}], "ejemplo": ["Euge tiene dos hijos en primaria. Todos los años marzo la tomaba por sorpresa. Este año sumó útiles, guardapolvos y zapatillas en noviembre, y le dio que apartando $45.000 por mes llegaba sin cuotas."], "pensar": ["¿Qué gasto de principio de año te tomó por sorpresa el año pasado?"], "medalla": null}, {"n": 27, "semana": 4, "titulo": "Tu plan del mes", "idea": ["Ya tenés todas las piezas. Hoy las juntás en un plan para tu próximo sueldo: cuánto va a cada cosa, antes de que llegue."], "tarea": [{"texto": "Abrí la calculadora de sueldo. La app ya tiene tus fijos con aumentos, tus cuotas, tu plata del día a día y tu aporte al colchón.", "sub": []}, {"texto": "Repartí tu próximo sueldo en este orden:", "sub": ["Fijos.", "Cuotas.", "Colchón y gastos de enero a marzo.", "Plata del día a día.", "Lo que sobre: para vos, sin culpa."]}, {"texto": "Si no te alcanza, volvé al semáforo y elegí qué achicar.", "sub": []}, {"texto": "Guardá el plan. El día que cobres, la app te lo recuerda.", "sub": []}], "ejemplo": ["Sebas armó su plan y le sobraban $30.000. Le daba culpa usarlos. Lo dejó como \"para mí\" y se los gastó tranquilo en una salida, sabiendo que todo lo demás ya estaba cubierto. Dice que fue la primera vez que gastó sin miedo."], "pensar": ["¿Qué se siente cobrar y saber de antemano adónde va cada peso?"], "medalla": null}, {"n": 28, "semana": 4, "titulo": "Cierre", "idea": ["Hace 28 días no sabías adónde se iba tu plata. Hoy tenés una foto, un plan y un montón de hábitos nuevos. Eso no te lo saca ningún aumento."], "tarea": [{"texto": "Abrí la calculadora de sueldo y mirá tu número del mes de hoy.", "sub": []}, {"texto": "Comparalo con el del día 6. La app te muestra la diferencia.", "sub": []}, {"texto": "Elegí 3 hábitos de estos 28 días que te quedás. Por ejemplo: leer el resumen, tope de cuotas, súper con lista.", "sub": []}, {"texto": "Escribí una frase para la persona que eras el día 1.", "sub": []}], "ejemplo": ["Javi, el del día 6, arrancó en menos $85.000. Hoy está en más $12.000. No es una fortuna, pero es la primera vez en años que termina el mes en positivo. Se quedó con tres hábitos: el tope de cuotas, la plata del día a día y llamar para negociar una vez por año."], "pensar": ["¿Qué le dirías a la persona que empezó este camino hace 28 días?"], "medalla": "Mi plata, en orden"}]};
+  const C = window.Calculadoras;
+  const CLAVE = 'plataEnOrden.v1';
+  const app = document.getElementById('app');
+
+  // Qué calculadora abre cada día.
+  const CALC_DIA = { 1: 'sueldo', 2: 'sueldo', 3: 'sueldo', 4: 'sueldo', 5: 'sueldo', 6: 'sueldo',
+    8: 'cuotas', 9: 'cuotas', 10: 'cuotas', 11: 'cuotas', 12: 'cuotas', 13: 'cuotas', 14: 'cuotas',
+    15: 'aumentos', 16: 'aumentos', 20: 'sueldo', 22: 'aguinaldo', 23: 'aguinaldo', 24: 'aguinaldo',
+    25: 'aguinaldo', 26: 'aguinaldo', 27: 'sueldo', 28: 'sueldo' };
+  const CALCS = { sueldo: 'Sueldo', cuotas: 'Cuotas', aumentos: 'Aumentos', aguinaldo: 'Aguinaldo' };
+  const REPASOS = [7, 14, 21, 28];
+
+  // ---------- Estado (queda solo en este celular) ----------
+  function inicial() {
+    return {
+      hechos: {}, notas: {}, numeroDia6: null, nombre: '',
+      sueldo: { meses: [{ monto: 0 }], extras: [], fijos: [], debitos: [], hormiga: [], cuotasManual: 0, diaADiaSemanal: 0, diaDeCobro: 0 },
+      cuotas: { lista: [], resumen: { cierre: '', vencimiento: '', saldo: 0, minimo: 0, tem: 0, tna: 0 }, tope: 0, nueva: { monto: 0, total: 0 } },
+      aumentos: { fijos: [], sueldoPct: 0, sueldoCada: 0, sueldoProx: 0 },
+      aguinaldo: { tipo: 'dependencia', sueldos: [{ monto: 0 }], mejorMes: 0,
+        pct: { deudas: 50, fiestas: 25, colchon: 15, gusto: 10 },
+        deudas: [], fiestas: [], guardado: 0, aporte: 0, enero: [], eneroMeses: 0 },
+    };
+  }
+  function mezclar(base, guardado) {
+    for (const k in guardado) {
+      if (base[k] && typeof base[k] === 'object' && !Array.isArray(base[k]) && guardado[k] && typeof guardado[k] === 'object') mezclar(base[k], guardado[k]);
+      else base[k] = guardado[k];
+    }
+    return base;
+  }
+  let E = inicial();
+  try { const g = localStorage.getItem(CLAVE); if (g) E = mezclar(inicial(), JSON.parse(g)); } catch (e) { /* sin almacenamiento: la app funciona igual */ }
+  function guardar() { try { localStorage.setItem(CLAVE, JSON.stringify(E)); } catch (e) { /* nada */ } }
+
+  function leer(ruta) { return ruta.split('.').reduce((o, k) => (o == null ? o : o[k]), E); }
+  function escribir(ruta, valor) {
+    const p = ruta.split('.'); const ult = p.pop();
+    const o = p.reduce((x, k) => x[k], E); o[ult] = valor;
+  }
+
+  // ---------- Formato ----------
+  const nf = new Intl.NumberFormat('es-AR', { maximumFractionDigits: 0 });
+  function plata(n) { n = Math.round(Number(n) || 0); return (n < 0 ? '− $' : '$') + nf.format(Math.abs(n)); }
+  function conSigno(n) { n = Math.round(Number(n) || 0); return (n > 0 ? '+ ' : '') + plata(n); }
+  function pct(x) { return (Math.round(x * 1000) / 10).toString().replace('.', ',') + '%'; }
+  function aNumero(t) {
+    let s = String(t).replace(/[$\s]/g, '');
+    if (/,/.test(s)) s = s.replace(/\./g, '').replace(',', '.');
+    else if (/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
+    const n = parseFloat(s);
+    return Number.isFinite(n) ? n : 0;
+  }
+  function verNum(n) { return n ? nf.format(n) : ''; }
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+
+  // ---------- Cuentas que usan varias pantallas ----------
+  function ingreso() {
+    return C.ingresoMensual({ meses: E.sueldo.meses.map(m => m.monto), extras: E.sueldo.extras.map(x => x.monto) });
+  }
+  function cuotasEsteMes() { return E.cuotas.lista.length ? C.totalCuotasDelMes(E.cuotas.lista, 0) : E.sueldo.cuotasManual; }
+  function numeroActual() {
+    return C.numeroDelMes({
+      ingresos: { meses: E.sueldo.meses.map(m => m.monto), extras: E.sueldo.extras.map(x => x.monto) },
+      fijos: E.sueldo.fijos, debitos: E.sueldo.debitos, hormiga: E.sueldo.hormiga, cuotasDelMes: cuotasEsteMes(),
+    });
+  }
+  function fijosMesQueViene() {
+    if (E.aumentos.fijos.length) return C.proyeccionAumentos(E.aumentos.fijos, 1).meses[0].fijos;
+    return C.fijosMensuales(E.sueldo.fijos);
+  }
+  function montoAguinaldo() {
+    return C.aguinaldo({ tipo: E.aguinaldo.tipo, sueldosSemestre: E.aguinaldo.sueldos.map(s => s.monto), mejorMes: E.aguinaldo.mejorMes });
+  }
+  function repartoAg() {
+    const p = E.aguinaldo.pct;
+    return C.repartoAguinaldo(montoAguinaldo(), { porcentajes: { deudas: p.deudas / 100, fiestas: p.fiestas / 100, colchon: p.colchon / 100, gusto: p.gusto / 100 } });
+  }
+  function eneroPorMes() { return C.eneroSinSustos(E.aguinaldo.enero, E.aguinaldo.eneroMeses).porMes; }
+
+  function cantidadHechos() { return Object.keys(E.hechos).length; }
+  function diaDeHoy() { for (let n = 1; n <= 28; n++) if (!E.hechos[n]) return n; return 28; }
+  function diasDesde(iso) { return Math.floor((Date.now() - new Date(iso).getTime()) / 86400000); }
+
+  // ---------- Pantallas ----------
+  let resultados = null; // función que redibuja los resultados de la calculadora abierta
+
+  function cabecera(extra) {
+    const hechos = cantidadHechos();
+    return `<div class="top"><a class="marca" href="#/inicio">Plata en Orden</a><span class="pill">${hechos === 28 ? '¡Terminaste!' : 'Día ' + diaDeHoy() + ' de 28'}</span></div>
+      <div class="barra"><i style="width:${(hechos / 28) * 100}%"></i></div>${extra || ''}`;
+  }
+
+  function vistaInicio() {
+    const hoy = diaDeHoy();
+    const d = CONTENIDO.dias[hoy - 1];
+    const semana = CONTENIDO.semanas[d.semana - 1];
+    const terminado = cantidadHechos() === 28;
+    const avisos = [];
+    if (E.hechos[19] && diasDesde(E.hechos[19]) >= 30) avisos.push('Ya pasó un mes de tus cortes del día 19. ¿Volvés a alguno o los dejás afuera? Anotalo en el día 19.');
+    if (E.sueldo.diaDeCobro && new Date().getDate() === Number(E.sueldo.diaDeCobro)) avisos.push('Hoy cobrás. Antes de gastar, mirá tu plan del mes. <a href="#/calc/sueldo"><b>Ver plan</b></a>');
+
+    let hero;
+    if (E.numeroDia6 === null) {
+      hero = `<div class="card hero"><div class="etq">Tu número del mes</div><div class="num">—</div><div class="sub">Aparece cuando termines el día 6.</div></div>`;
+    } else {
+      const n = numeroActual().numero;
+      hero = `<div class="card hero"><div class="etq">Tu número del mes</div><div class="num">${conSigno(n)}</div><div class="sub">El día 6 estabas en ${conSigno(E.numeroDia6)}</div></div>`;
+    }
+
+    const tarea = terminado
+      ? `<div class="card"><div class="etq">28 de 28</div><h2>¡Lo lograste!</h2><p class="sub">Tu certificado te espera.</p><a class="btn" href="#/certificado" style="margin-top:10px">Ver mi certificado</a></div>`
+      : `<div class="card"><div class="etq">${esc(semana.titulo)} · Tarea de hoy · 10 min</div><h2>Día ${hoy}. ${esc(d.titulo)}</h2><div class="sub">${d.idea[0]}</div><a class="btn" href="#/dia/${hoy}" style="margin-top:12px">Empezar</a></div>`;
+
+    const medallas = REPASOS.map((r, i) => `<span class="med ${E.hechos[r] ? 'on' : ''}" title="${esc(CONTENIDO.dias[r - 1].medalla || '')}">${E.hechos[r] ? '🏅' : '🔒'}</span>`).join('');
+    const dias = CONTENIDO.dias.map(x => `<a href="#/dia/${x.n}" class="${E.hechos[x.n] ? 'ok' : ''} ${x.n === hoy && !terminado ? 'hoy' : ''}">${x.n}</a>`).join('');
+
+    app.innerHTML = cabecera() + avisos.map(a => `<div class="aviso">${a}</div>`).join('') + hero + tarea +
+      `<div class="chips">${Object.keys(CALCS).map(k => `<a class="chip" href="#/calc/${k}">${CALCS[k]}</a>`).join('')}</div>
+      <div class="card"><div class="etq">Tus medallas</div><div class="medallas" style="margin-top:10px">${medallas}</div></div>
+      <div class="card"><div class="etq">Los 28 días</div><div class="dias" style="margin-top:12px">${dias}</div></div>
+      <div class="pie no-print">Tus datos se guardan solo en este celular.<br><button data-accion="borrar">Borrar mis datos</button></div>`;
+  }
+
+  function vistaDia(n) {
+    const d = CONTENIDO.dias[n - 1];
+    if (!d) { location.hash = '#/inicio'; return; }
+    const semana = CONTENIDO.semanas[d.semana - 1];
+    const calc = CALC_DIA[n];
+    const hecho = !!E.hechos[n];
+    const tarea = d.tarea.map(t => `<li>${t.texto}${t.sub.length ? '<ul>' + t.sub.map(s => `<li>${s}</li>`).join('') + '</ul>' : ''}</li>`).join('');
+    app.innerHTML = cabecera(`<a class="volver no-print" href="#/inicio">← Inicio</a>`) + `
+      <div class="etq" style="margin-top:6px">${esc(semana.titulo)} · Día ${n} de 28</div>
+      <h1>${esc(d.titulo)}</h1>
+      <div class="card"><div class="etq">La idea</div><div style="margin-top:6px">${d.idea.map(p => `<p>${p}</p>`).join('')}</div></div>
+      <div class="card"><div class="etq">Tu tarea de hoy · 10 minutos</div><ol class="tarea" style="margin-top:8px">${tarea}</ol>
+        ${calc ? `<a class="btn sec ancho" href="#/calc/${calc}" style="margin-top:8px">Abrir calculadora de ${CALCS[calc].toLowerCase()}</a>` : ''}</div>
+      <div class="card"><div class="etq">Ejemplo</div><div style="margin-top:6px">${d.ejemplo.map(p => `<p>${p}</p>`).join('')}</div></div>
+      <div class="card"><div class="etq">Para pensar</div><p style="margin-top:6px"><strong>${d.pensar.join(' ')}</strong></p>
+        <textarea data-path="notas.${n}" data-tipo="txt" placeholder="Escribí lo que quieras. Queda solo en tu celular.">${esc(E.notas[n] || '')}</textarea></div>
+      <button class="btn ancho ${hecho ? 'hecho' : ''}" data-accion="hecho" data-dia="${n}">${hecho ? '✓ Día ' + n + ' hecho' : 'Marcar el día ' + n + ' como hecho'}</button>
+      <div style="display:flex;justify-content:space-between;margin-top:14px">
+        ${n > 1 ? `<a class="volver" href="#/dia/${n - 1}">← Día ${n - 1}</a>` : '<span></span>'}
+        ${n < 28 ? `<a class="volver" href="#/dia/${n + 1}">Día ${n + 1} →</a>` : ''}
+      </div>`;
+  }
+
+  // Editor de listas: cada fila es un objeto de la lista en "ruta".
+  function lista(ruta, campos, textoAgregar) {
+    const filas = leer(ruta) || [];
+    const quitar = (r, i) => `<button class="x" data-quitar="${r}.${i}" aria-label="Quitar">×</button>`;
+    let cuerpo;
+    if (campos.length === 1) {
+      cuerpo = filas.map((f, i) => `<div class="fila" style="grid-template-columns:1fr 34px">${control(`${ruta}.${i}.${campos[0].k}`, campos[0], f[campos[0].k])}${quitar(ruta, i)}</div>`).join('');
+    } else {
+      const [primero, ...resto] = campos;
+      cuerpo = filas.map((f, i) => `<div class="caja">
+        <div class="fila" style="grid-template-columns:1fr 34px">${control(`${ruta}.${i}.${primero.k}`, primero, f[primero.k])}${quitar(ruta, i)}</div>
+        <div class="mini" style="grid-template-columns:repeat(${resto.length}, 1fr)">${resto.map(c => `<label><span>${c.titulo}</span>${control(`${ruta}.${i}.${c.k}`, c, f[c.k])}</label>`).join('')}</div>
+      </div>`).join('');
+    }
+    return cuerpo + `<button class="btn chico sec" data-agregar="${ruta}">+ ${textoAgregar}</button>`;
+  }
+  function control(ruta, c, valor) {
+    if (c.tipo === 'sel') return `<select data-path="${ruta}" data-tipo="txt">${c.ops.map(o => `<option value="${esc(o[0])}" ${String(valor) === String(o[0]) ? 'selected' : ''}>${esc(o[1])}</option>`).join('')}</select>`;
+    if (c.tipo === 'txt') return `<input data-path="${ruta}" data-tipo="txt" value="${esc(valor)}" placeholder="${esc(c.ph || '')}">`;
+    return `<input data-path="${ruta}" data-tipo="num" inputmode="decimal" value="${esc(verNum(valor))}" placeholder="${esc(c.ph || '0')}">`;
+  }
+  function campo(ruta, etiqueta, ph, tipo) {
+    return `<div class="campo"><label>${etiqueta}</label>${control(ruta, { tipo: tipo || 'num', ph }, leer(ruta))}</div>`;
+  }
+  const SEMAFORO = { tipo: 'sel', k: 'color', titulo: 'Color', ancho: '86px', ops: [['', '—'], ['verde', '🟢'], ['amarillo', '🟡'], ['rojo', '🔴']] };
+  const NUEVAS = {
+    'sueldo.meses': { monto: 0 }, 'sueldo.extras': { nombre: '', monto: 0 },
+    'sueldo.fijos': { nombre: '', monto: 0, cadaMeses: '1', color: '' },
+    'sueldo.debitos': { nombre: '', monto: 0, uso: 'si', color: '' },
+    'sueldo.hormiga': { nombre: '', monto: 0, color: '' },
+    'cuotas.lista': { nombre: '', monto: 0, actual: 1, total: 12 },
+    'aumentos.fijos': { nombre: '', monto: 0, cadaMeses: 1, proximoEn: 1, porcentaje: 0 },
+    'aguinaldo.sueldos': { monto: 0 }, 'aguinaldo.deudas': { nombre: '', saldo: 0, tem: 0, sinInteres: 'no' },
+    'aguinaldo.fiestas': { nombre: '', monto: 0 }, 'aguinaldo.enero': { nombre: '', monto: 0 },
+  };
+
+  function tabs(actual) {
+    return `<div class="tabs no-print">${Object.keys(CALCS).map(k => `<a href="#/calc/${k}" class="${k === actual ? 'on' : ''}">${CALCS[k]}</a>`).join('')}</div>`;
+  }
+  function lineas(items) { return items.map(([a, b, cls]) => `<div class="linea ${cls || ''}"><span>${a}</span><b>${b}</b></div>`).join(''); }
+
+  // --- Sueldo ---
+  function calcSueldo() {
+    const cuotasAuto = E.cuotas.lista.length > 0;
+    return `<h1>Sueldo y número del mes</h1>
+      <div class="card"><h2>Lo que entra <span class="sub">(día 1)</span></h2>
+        <p class="sub">Si cobrás distinto cada mes, cargá los últimos 3. La app saca el promedio.</p>
+        ${lista('sueldo.meses', [{ k: 'monto', titulo: 'Cobrado en mano', ph: '780.000' }], 'otro mes')}
+        <h3>Extras: changas, ventas, horas extra</h3>
+        ${lista('sueldo.extras', [{ k: 'nombre', titulo: 'Qué', tipo: 'txt', ph: 'Tortas' }, { k: 'monto', titulo: 'Monto', ph: '120.000' }], 'extra')}
+        <div class="res" id="res-ingreso"></div></div>
+      <div class="card"><h2>Fijos <span class="sub">(día 2)</span></h2>
+        ${lista('sueldo.fijos', [{ k: 'nombre', titulo: 'Qué', tipo: 'txt', ph: 'Alquiler' }, { k: 'monto', titulo: 'Monto', ph: '400.000' }, { k: 'cadaMeses', titulo: 'Llega', tipo: 'sel', ancho: '96px', ops: [['1', 'Por mes'], ['2', 'Bimestral']] }, SEMAFORO], 'fijo')}</div>
+      <div class="card"><h2>Débitos automáticos <span class="sub">(día 3)</span></h2>
+        ${lista('sueldo.debitos', [{ k: 'nombre', titulo: 'Qué', tipo: 'txt', ph: 'Plataforma de series' }, { k: 'monto', titulo: 'Monto', ph: '8.000' }, { k: 'uso', titulo: '¿Lo usás?', tipo: 'sel', ancho: '86px', ops: [['si', 'Sí'], ['no', 'No']] }, SEMAFORO], 'débito')}
+        <div class="res" id="res-debitos"></div></div>
+      <div class="card"><h2>Gastos hormiga de una semana <span class="sub">(día 4)</span></h2>
+        ${lista('sueldo.hormiga', [{ k: 'nombre', titulo: 'Qué', tipo: 'txt', ph: 'Café' }, { k: 'monto', titulo: 'Monto', ph: '3.500' }, SEMAFORO], 'gasto')}
+        <div class="res" id="res-hormiga"></div></div>
+      <div class="card"><h2>Cuotas de la tarjeta este mes</h2>
+        ${cuotasAuto ? `<p class="sub">Sale de tu calculadora de cuotas: <b>${plata(C.totalCuotasDelMes(E.cuotas.lista, 0))}</b>.</p>` : campo('sueldo.cuotasManual', 'Total de cuotas del último resumen', '310.000')}</div>
+      <div class="card hero"><div class="etq">Tu número del mes (día 6)</div><div id="res-numero"></div></div>
+      <div class="card"><h2>El semáforo <span class="sub">(día 5)</span></h2><div id="res-semaforo"></div></div>
+      <div class="card"><h2>Tu plan del mes <span class="sub">(días 20 y 27)</span></h2>
+        <div class="dos">${campo('sueldo.diaADiaSemanal', 'Plata del día a día, por semana', '40.000')}${campo('sueldo.diaDeCobro', 'Día del mes en que cobrás', '5')}</div>
+        <div id="res-plan"></div></div>`;
+  }
+  function resSueldo() {
+    const ing = ingreso();
+    const r = numeroActual();
+    const set = (id, h) => { const el = document.getElementById(id); if (el) el.innerHTML = h; };
+    set('res-ingreso', lineas([['Sueldo' + (E.sueldo.meses.filter(m => m.monto > 0).length > 1 ? ' (promedio)' : ''), plata(ing.sueldo)], ['Extras', plata(ing.extras)], ['Entra por mes', plata(ing.total), 'total']]));
+    const noUsa = E.sueldo.debitos.filter(d => d.uso === 'no');
+    set('res-debitos', lineas([['Total por mes', plata(r.debitos), 'total']]) + (noUsa.length ? `<p class="nota">Si das de baja los que no usás, te ahorrás ${plata(noUsa.reduce((t, d) => t + (Number(d.monto) || 0), 0))} por mes.</p>` : ''));
+    const h = C.hormigaMensual(E.sueldo.hormiga);
+    set('res-hormiga', lineas([['En la semana', plata(h.semana)], ['En un mes (por 4)', plata(h.mes), 'total']]));
+    set('res-numero', `<div class="num">${conSigno(r.numero)}</div>
+      ${lineas([['Entra', plata(r.entra)], ['Fijos', '− ' + plata(r.fijos)], ['Débitos', '− ' + plata(r.debitos)], ['Gastos hormiga', '− ' + plata(r.hormiga)], ['Cuotas', '− ' + plata(r.cuotas)]])}
+      ${E.numeroDia6 !== null ? `<p class="sub" style="margin-top:8px">El día 6 estabas en ${conSigno(E.numeroDia6)}. Diferencia: <b>${conSigno(C.compararNumeros(E.numeroDia6, r.numero).diferencia)}</b>.</p>` : ''}
+      <button class="btn chico" data-accion="guardar6" style="margin-top:10px">${E.numeroDia6 === null ? 'Guardar como mi número del día 6' : 'Volver a guardar como número del día 6'}</button>`);
+    const colores = { verde: 0, amarillo: 0, rojo: 0, '': 0 };
+    E.sueldo.fijos.forEach(f => { colores[f.color || ''] += (Number(f.monto) || 0) / (Number(f.cadaMeses) || 1); });
+    E.sueldo.debitos.forEach(f => { colores[f.color || ''] += Number(f.monto) || 0; });
+    E.sueldo.hormiga.forEach(f => { colores[f.color || ''] += (Number(f.monto) || 0) * 4; });
+    set('res-semaforo', `<p class="sub">Pintá cada gasto de arriba con un color. Por mes:</p>` + lineas([
+      ['<span class="sem" style="background:var(--verde)"></span>Necesario', plata(colores.verde)],
+      ['<span class="sem" style="background:var(--amarillo)"></span>Importa, se puede achicar', plata(colores.amarillo)],
+      ['<span class="sem" style="background:var(--rojo)"></span>Se puede cortar', plata(colores.rojo)],
+      ['Sin color todavía', plata(colores[''])]]));
+    const proxCuotas = E.cuotas.lista.length ? C.totalCuotasDelMes(E.cuotas.lista, 1) : E.sueldo.cuotasManual;
+    const p = C.planDelMes({ sueldo: ing.total, fijos: fijosMesQueViene(), cuotas: proxCuotas, colchon: E.aguinaldo.aporte, enero: eneroPorMes(), diaADiaSemanal: E.sueldo.diaADiaSemanal });
+    const nombres = { fijos: 'Fijos (con aumentos)', cuotas: 'Cuotas', colchon: 'Colchón', enero: 'Gastos de enero a marzo', diaADia: 'Día a día (4 semanas)' };
+    set('res-plan', `<p class="sub">Tu próximo sueldo, en este orden:</p>` +
+      lineas(Object.keys(p.reparto).map(k => [nombres[k], plata(p.reparto[k].necesita), p.reparto[k].cubierto < p.reparto[k].necesita ? 'neg' : ''])) +
+      lineas([[p.alcanza ? 'Para vos, sin culpa' : 'Te faltan', p.alcanza ? plata(p.paraVos) : plata(p.falta), 'total ' + (p.alcanza ? 'pos' : 'neg')]]) +
+      (p.alcanza ? '' : '<p class="nota">No alcanza: volvé al semáforo y elegí qué achicar.</p>'));
+  }
+
+  // --- Cuotas ---
+  function calcCuotas() {
+    return `<h1>Tarjeta y cuotas</h1>
+      <div class="card"><h2>Tu resumen <span class="sub">(día 8)</span></h2>
+        <div class="dos">${campo('cuotas.resumen.cierre', 'Fecha de cierre', '24/11', 'txt')}${campo('cuotas.resumen.vencimiento', 'Vencimiento', '05/12', 'txt')}</div>
+        <div class="dos">${campo('cuotas.resumen.saldo', 'Saldo total', '400.000')}${campo('cuotas.resumen.minimo', 'Pago mínimo', '60.000')}</div>
+        <div class="dos">${campo('cuotas.resumen.tem', 'Tasa mensual (TEM) %', '6')}${campo('cuotas.resumen.tna', 'O la anual (TNA) %', '73')}</div>
+        <p class="nota">Las tasas figuran en el resumen, casi siempre abajo de todo. Con una alcanza.</p>
+        <div class="res" id="res-minimo"></div></div>
+      <div class="card"><h2>Tus cuotas <span class="sub">(día 9)</span></h2>
+        <p class="sub">"Voy en" es la cuota que pagás este mes.</p>
+        ${lista('cuotas.lista', [{ k: 'nombre', titulo: 'Qué', tipo: 'txt', ph: 'Heladera' }, { k: 'monto', titulo: 'Por mes', ph: '45.000' }, { k: 'actual', titulo: 'Voy en', ancho: '62px', ph: '4' }, { k: 'total', titulo: 'De', ancho: '62px', ph: '12' }], 'cuota')}
+        <div class="res" id="res-cuotas"></div></div>
+      <div class="card"><h2>Los próximos 12 meses <span class="sub">(día 10)</span></h2><div id="res-proyeccion"></div></div>
+      <div class="card"><h2>Tu tope de cuotas <span class="sub">(día 13)</span></h2>
+        ${campo('cuotas.tope', 'Lo máximo que querés pagar de cuotas por mes', '180.000')}
+        <div id="res-tope"></div></div>
+      <div class="card"><h2>¿Entra una compra nueva? <span class="sub">(día 12)</span></h2>
+        <div class="dos">${campo('cuotas.nueva.monto', 'Cuota por mes', '50.000')}${campo('cuotas.nueva.total', 'Cantidad de cuotas', '6')}</div>
+        <div id="res-nueva"></div></div>`;
+  }
+  function resCuotas() {
+    const set = (id, h) => { const el = document.getElementById(id); if (el) el.innerHTML = h; };
+    const r = E.cuotas.resumen;
+    if (r.saldo > 0 && (r.tem > 0 || r.tna > 0)) {
+      const m = C.pagoMinimo({ saldo: r.saldo, pago: r.minimo, tem: r.tem, tna: r.tna });
+      set('res-minimo', `<h3>Si pagás solo el mínimo (día 11)</h3>` + lineas([
+        ['Pasa al mes que viene', plata(m.pasaAlMesQueViene)], ['Intereses', plata(m.interes)], ['IVA de los intereses (21%)', plata(m.iva)],
+        ['Te cuesta patear la deuda', plata(m.costoDePatear), 'total neg'], ['Deuda que arrastrás', plata(m.deudaQueArrastras)]]) +
+        '<p class="nota">Es una estimación: el banco puede sumar otros cargos e impuestos.</p>');
+    } else set('res-minimo', '<p class="nota">Cargá el saldo y una tasa para ver cuánto te cuesta pagar solo el mínimo.</p>');
+
+    const lista = E.cuotas.lista;
+    const res = C.resumenCuotas(lista, ingreso().total);
+    set('res-cuotas', lineas([['Pagás por mes', plata(res.porMes), 'total'], ['Deuda total en cuotas', plata(res.deudaTotal)]].concat(res.parteDelSueldo !== null ? [['Parte de lo que entra', pct(res.parteDelSueldo)]] : [])));
+
+    if (!lista.length) { set('res-proyeccion', '<p class="nota">Cargá tus cuotas para ver el gráfico.</p>'); set('res-tope', ''); set('res-nueva', ''); return; }
+    const p = C.proyeccionCuotas(lista, 12);
+    const max = Math.max(...p.map(x => x.total), 1);
+    const al = C.mesDeAlivio(lista);
+    set('res-proyeccion', (al ? `<p>Tu mes de alivio: <b>${al.mes}</b>. Te quedan <b>${plata(al.libera)}</b> libres por mes.</p>` : '') +
+      `<div class="barras">${p.map(x => `<div class="bar"><span>${x.mes}</span><span class="b ${al && x.desde === al.desde ? 'alivio' : ''}" style="width:${(x.total / max) * 100}%"></span><em>${plata(x.total)}</em></div>`).join('')}</div>
+      <p class="nota">Si no sumás ninguna cuota nueva.</p>`);
+    const tope = Number(E.cuotas.tope) || 0;
+    if (tope > 0) {
+      const ef = C.efectoDelTope(numeroActual().numero, res.porMes, tope);
+      set('res-tope', res.porMes > tope
+        ? `<p>Hoy te pasás por <b class="neg">${plata(res.porMes - tope)}</b>. Con el tope, tu número del mes quedaría en <b>${conSigno(ef.numeroConTope)}</b>.</p>`
+        : `<p class="pos"><b>Estás dentro de tu tope.</b> Te sobran ${plata(tope - res.porMes)} por mes.</p>`);
+      const nv = E.cuotas.nueva;
+      if (nv.monto > 0 && nv.total > 0) {
+        const e = C.entraEnElTope(lista, tope, nv);
+        set('res-nueva', e.entra ? '<p class="pos"><b>Entra en tu tope todos los meses.</b> Igual preguntate si hay precio de contado.</p>'
+          : `<p class="neg"><b>No entra.</b> Te pasás en:</p>` + lineas(e.problemas.map(x => [x.mes, '+ ' + plata(x.sePasaPor)])));
+      } else set('res-nueva', '');
+    } else { set('res-tope', '<p class="nota">Elegí un tope para que la app te avise si te pasás.</p>'); set('res-nueva', '<p class="nota">Primero elegí tu tope.</p>'); }
+  }
+
+  // --- Aumentos ---
+  function calcAumentos() {
+    return `<h1>Aumentos</h1>
+      <div class="card"><h2>Qué aumenta y cada cuánto <span class="sub">(día 15)</span></h2>
+        <p class="sub">"Próximo en" es en cuántos meses llega el aumento (1 = el mes que viene). Si no sabés, dejá 1: es lo más seguro.</p>
+        ${E.sueldo.fijos.length ? '<button class="btn chico sec" data-accion="traerFijos" style="margin-bottom:10px">Traer mis fijos del día 2</button>' : ''}
+        ${lista('aumentos.fijos', [{ k: 'nombre', titulo: 'Qué', tipo: 'txt', ph: 'Alquiler' }, { k: 'monto', titulo: 'Hoy', ph: '400.000' }, { k: 'cadaMeses', titulo: 'Cada (meses)', ancho: '62px', ph: '4' }, { k: 'proximoEn', titulo: 'Próximo en', ancho: '62px', ph: '2' }, { k: 'porcentaje', titulo: '% sube', ancho: '62px', ph: '10' }], 'fijo')}</div>
+      <div class="card"><h2>¿Tu sueldo aumenta? <span class="sub">(opcional)</span></h2>
+        <div class="dos">${campo('aumentos.sueldoPct', '% que sube', '5')}${campo('aumentos.sueldoCada', 'Cada cuántos meses', '3')}</div>
+        ${campo('aumentos.sueldoProx', 'Próximo aumento en (meses)', '1')}</div>
+      <div class="card"><h2>Tu mes que viene, con aumentos <span class="sub">(día 16)</span></h2><div id="res-aumentos"></div></div>`;
+  }
+  function resAumentos() {
+    const el = document.getElementById('res-aumentos'); if (!el) return;
+    if (!E.aumentos.fijos.length) { el.innerHTML = '<p class="nota">Cargá tus fijos para ver los próximos meses.</p>'; return; }
+    const a = E.aumentos;
+    const r = C.proyeccionAumentos(a.fijos, 3, { monto: ingreso().total, porcentaje: a.sueldoPct, cadaMeses: a.sueldoCada, proximoEn: a.sueldoProx });
+    el.innerHTML = lineas([['Tus fijos hoy', plata(r.hoy)]]) + r.meses.map(m => `<h3 style="text-transform:capitalize">${m.mes}</h3>` + lineas([
+      ['Fijos', plata(m.fijos) + ` <span class="sub">(${conSigno(m.fijos - r.hoy)})</span>`],
+      ...(m.sueldo !== undefined ? [['Entra', plata(m.sueldo)], ['Te queda después de los fijos', plata(m.leQueda), 'total ' + (m.leQueda < 0 ? 'neg' : '')]] : [])])).join('');
+  }
+
+  // --- Aguinaldo ---
+  function calcAguinaldo() {
+    const indep = E.aguinaldo.tipo === 'independiente';
+    return `<h1>Aguinaldo, colchón y enero</h1>
+      <div class="card"><h2>Tu aguinaldo <span class="sub">(día 22)</span></h2>
+        <div class="campo"><label>Cómo trabajás</label>${control('aguinaldo.tipo', { tipo: 'sel', ops: [['dependencia', 'En relación de dependencia'], ['independiente', 'Independiente o monotributista']] }, E.aguinaldo.tipo)}</div>
+        ${indep ? campo('aguinaldo.mejorMes', 'Tu mejor mes del año', '700.000')
+          : `<p class="sub">Cargá tus sueldos del semestre. El aguinaldo es la mitad del mejor.</p>${lista('aguinaldo.sueldos', [{ k: 'monto', titulo: 'Sueldo', ph: '1.000.000' }], 'sueldo')}`}
+        <h3>Reparto (en %)</h3>
+        <div class="dos">${campo('aguinaldo.pct.deudas', 'Deudas', '50')}${campo('aguinaldo.pct.fiestas', 'Fiestas', '25')}</div>
+        <div class="dos">${campo('aguinaldo.pct.colchon', 'Colchón', '15')}${campo('aguinaldo.pct.gusto', 'Un gusto', '10')}</div>
+        <div class="res" id="res-aguinaldo"></div></div>
+      <div class="card"><h2>Primero las deudas caras <span class="sub">(día 23)</span></h2>
+        ${lista('aguinaldo.deudas', [{ k: 'nombre', titulo: 'Qué', tipo: 'txt', ph: 'Saldo financiado' }, { k: 'saldo', titulo: 'Debés', ph: '200.000' }, { k: 'tem', titulo: 'Tasa mes %', ancho: '62px', ph: '6' }, { k: 'sinInteres', titulo: 'Sin interés', tipo: 'sel', ancho: '72px', ops: [['no', 'No'], ['si', 'Sí']] }], 'deuda')}
+        <div class="res" id="res-deudas"></div></div>
+      <div class="card"><h2>Las fiestas con presupuesto <span class="sub">(día 24)</span></h2>
+        ${lista('aguinaldo.fiestas', [{ k: 'nombre', titulo: 'Qué o para quién', tipo: 'txt', ph: 'Regalo de mamá' }, { k: 'monto', titulo: 'Monto', ph: '30.000' }], 'gasto')}
+        <div class="res" id="res-fiestas"></div></div>
+      <div class="card"><h2>Tu colchón <span class="sub">(día 25)</span></h2>
+        <div class="dos">${campo('aguinaldo.guardado', 'Ya tenés guardado', '20.000')}${campo('aguinaldo.aporte', 'Aporte cada vez que cobrás', '25.000')}</div>
+        <div id="res-colchon"></div></div>
+      <div class="card"><h2>Enero sin sustos <span class="sub">(día 26)</span></h2>
+        ${lista('aguinaldo.enero', [{ k: 'nombre', titulo: 'Qué', tipo: 'txt', ph: 'Útiles' }, { k: 'monto', titulo: 'Monto', ph: '80.000' }], 'gasto')}
+        ${campo('aguinaldo.eneroMeses', 'Cuántos cobros te quedan hasta el primer gasto', '3')}
+        <div id="res-enero"></div></div>`;
+  }
+  function resAguinaldo() {
+    const set = (id, h) => { const el = document.getElementById(id); if (el) el.innerHTML = h; };
+    const monto = montoAguinaldo();
+    const rep = repartoAg();
+    const p = E.aguinaldo.pct;
+    const suma = (Number(p.deudas) || 0) + (Number(p.fiestas) || 0) + (Number(p.colchon) || 0) + (Number(p.gusto) || 0);
+    set('res-aguinaldo', lineas([['Tu aguinaldo', plata(monto), 'total'], ['Deudas', plata(rep.deudas)], ['Fiestas', plata(rep.fiestas)], ['Colchón', plata(rep.colchon)], ['Un gusto', plata(rep.gusto)]]) +
+      (suma !== 100 ? `<p class="nota neg">Los porcentajes suman ${suma}%. Tienen que sumar 100%.</p>` : '') +
+      (E.aguinaldo.tipo !== 'independiente' ? '<p class="nota">En mano te puede llegar un poco menos por los descuentos.</p>' : ''));
+    const deudas = E.aguinaldo.deudas.map(d => ({ nombre: d.nombre || 'Deuda', saldo: d.saldo, tem: d.tem, sinInteres: d.sinInteres === 'si' }));
+    if (deudas.length) {
+      const c = C.cancelarDeudas(deudas, rep.deudas);
+      set('res-deudas', `<p class="sub">En este orden, con ${plata(rep.deudas)}:</p>` + lineas(c.plan.map((x, i) => [`${i + 1}. ${esc(x.nombre)}${x.sinInteres ? ' (sin interés)' : ''}`, x.paga ? 'pagás ' + plata(x.paga) : '—'])) +
+        lineas([['Intereses que te ahorrás el mes que viene', plata(c.ahorroPorMes), 'total pos']].concat(c.sobra ? [['Te sobra para el colchón', plata(c.sobra)]] : [])));
+    } else set('res-deudas', '<p class="nota">Si no tenés deudas, mové ese porcentaje al colchón.</p>');
+    const gastoFiestas = E.aguinaldo.fiestas.reduce((t, x) => t + (Number(x.monto) || 0), 0);
+    set('res-fiestas', lineas([['Presupuesto', plata(rep.fiestas)], ['Lo que anotaste', plata(gastoFiestas)], [gastoFiestas > rep.fiestas ? 'Te pasás por' : 'Te queda', plata(Math.abs(rep.fiestas - gastoFiestas)), 'total ' + (gastoFiestas > rep.fiestas ? 'neg' : 'pos')]]));
+    const col = C.colchon({ fijosMesQueViene: fijosMesQueViene(), guardado: E.aguinaldo.guardado, aportePorCobro: E.aguinaldo.aporte });
+    set('res-colchon', col.meta > 0
+      ? `<div class="barra" style="margin:8px 0"><i style="width:${col.avance * 100}%"></i></div>` + lineas([['Meta: un mes de fijos', plata(col.meta)], ['Te falta', plata(col.falta), 'total']]) +
+        (col.cobrosParaLlegar ? `<p class="nota">Con ese aporte llegás en ${col.cobrosParaLlegar} cobros.</p>` : '')
+      : '<p class="nota">Cargá tus fijos (calculadora de sueldo) para saber tu meta.</p>');
+    const en = C.eneroSinSustos(E.aguinaldo.enero, E.aguinaldo.eneroMeses);
+    set('res-enero', lineas([['Total de enero a marzo', plata(en.total)], ['Apartá por mes', plata(en.porMes), 'total']]));
+  }
+
+  function vistaCalc(nombre) {
+    const vistas = { sueldo: [calcSueldo, resSueldo], cuotas: [calcCuotas, resCuotas], aumentos: [calcAumentos, resAumentos], aguinaldo: [calcAguinaldo, resAguinaldo] };
+    const v = vistas[nombre];
+    if (!v) { location.hash = '#/inicio'; return; }
+    app.innerHTML = cabecera(`<a class="volver no-print" href="#/inicio">← Inicio</a>`) + tabs(nombre) + v[0]();
+    resultados = v[1];
+    resultados();
+  }
+
+  function vistaCertificado() {
+    if (!E.hechos[28]) {
+      app.innerHTML = cabecera(`<a class="volver" href="#/inicio">← Inicio</a>`) + '<div class="card"><h2>Tu certificado</h2><p class="sub">Aparece cuando termines el día 28.</p></div>';
+      return;
+    }
+    const n = numeroActual().numero;
+    app.innerHTML = cabecera(`<a class="volver no-print" href="#/inicio">← Inicio</a>`) + `
+      <div class="card no-print">${campo('nombre', 'Tu nombre para el certificado', 'Tu nombre', 'txt')}</div>
+      <div class="card cert"><div class="etq">Plata en Orden</div>
+        <h1 style="margin:14px 0 8px">Mi plata, en orden</h1>
+        <p>Certificamos que</p><h2 id="cert-nombre" style="font-size:24px">${esc(E.nombre) || '—'}</h2>
+        <p>completó los 28 días para ordenar su plata.</p>
+        ${E.numeroDia6 !== null ? `<p class="sub">Día 6: ${conSigno(E.numeroDia6)} · Día 28: ${conSigno(n)}</p>` : ''}
+        <p class="sub">${new Date(E.hechos[28]).toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' })}</p></div>
+      <button class="btn ancho no-print" data-accion="imprimir">Guardar o imprimir</button>`;
+  }
+
+  // ---------- Navegación ----------
+  function render() {
+    resultados = null;
+    const h = location.hash.replace(/^#\/?/, '').split('/');
+    if (h[0] === 'dia') vistaDia(parseInt(h[1], 10));
+    else if (h[0] === 'calc') vistaCalc(h[1]);
+    else if (h[0] === 'certificado') vistaCertificado();
+    else vistaInicio();
+    window.scrollTo(0, 0);
+  }
+  function toast(t) {
+    document.querySelectorAll('.toast').forEach(x => x.remove());
+    const el = document.createElement('div'); el.className = 'toast'; el.textContent = t;
+    document.body.appendChild(el); setTimeout(() => el.remove(), 3200);
+  }
+
+  app.addEventListener('input', e => {
+    const el = e.target; const ruta = el.dataset.path; if (!ruta) return;
+    escribir(ruta, el.dataset.tipo === 'num' ? aNumero(el.value) : el.value);
+    guardar();
+    if (ruta === 'nombre') { const c = document.getElementById('cert-nombre'); if (c) c.textContent = el.value || '—'; }
+    if (resultados) resultados();
+  });
+  app.addEventListener('change', e => {
+    const el = e.target;
+    if (el.tagName === 'SELECT' && el.dataset.path === 'aguinaldo.tipo') render();
+    else if (el.dataset.tipo === 'num' && el.value) el.value = verNum(aNumero(el.value));
+  });
+  let borrarArmado = false;
+  app.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.agregar) {
+      leer(b.dataset.agregar).push(JSON.parse(JSON.stringify(NUEVAS[b.dataset.agregar] || {})));
+      guardar(); const y = window.scrollY; render(); window.scrollTo(0, y); return;
+    }
+    if (b.dataset.quitar) {
+      const p = b.dataset.quitar.split('.'); const i = Number(p.pop());
+      leer(p.join('.')).splice(i, 1); guardar(); const y = window.scrollY; render(); window.scrollTo(0, y); return;
+    }
+    const a = b.dataset.accion;
+    if (a === 'hecho') {
+      const n = Number(b.dataset.dia);
+      if (E.hechos[n]) delete E.hechos[n];
+      else {
+        E.hechos[n] = new Date().toISOString();
+        if (n === 6) E.numeroDia6 = numeroActual().numero;
+        const d = CONTENIDO.dias[n - 1];
+        toast(d.medalla ? '🏅 Medalla: ' + d.medalla : '✓ Día ' + n + ' hecho');
+      }
+      guardar();
+      if (E.hechos[n] && n < 28) { location.hash = '#/inicio'; } else render();
+    } else if (a === 'guardar6') {
+      E.numeroDia6 = numeroActual().numero; guardar(); toast('Guardado como tu número del día 6'); resultados && resultados();
+    } else if (a === 'traerFijos') {
+      const ya = new Set(E.aumentos.fijos.map(f => (f.nombre || '').toLowerCase()));
+      E.sueldo.fijos.forEach(f => { if (!ya.has((f.nombre || '').toLowerCase())) E.aumentos.fijos.push({ nombre: f.nombre, monto: Math.round((Number(f.monto) || 0) / (Number(f.cadaMeses) || 1)), cadaMeses: 1, proximoEn: 1, porcentaje: 0 }); });
+      guardar(); render();
+    } else if (a === 'imprimir') {
+      window.print();
+    } else if (a === 'borrar') {
+      if (!borrarArmado) { borrarArmado = true; b.textContent = 'Tocá de nuevo para borrar todo'; setTimeout(() => { borrarArmado = false; b.textContent = 'Borrar mis datos'; }, 4000); return; }
+      E = inicial(); guardar(); borrarArmado = false; render(); toast('Listo, empezás de cero');
+    }
+  });
+
+  window.addEventListener('hashchange', render);
+  render();
+})();
+</script>
+</body>
+</html>
